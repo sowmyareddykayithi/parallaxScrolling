@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<style type="text/css">
+		body{
+			margin:0px; padding:0px;
+		}
+		#progress{height:2%;   height: 2%;
+  background: #000;
+  position: fixed;
+  bottom: 0px;
+	-webkit-transition:background 1s;
+-moz-transition:background 1s;
+-o-transition:background 1s;
+transition:background 1s
+  }
+		#wrap{height:2000px;}
+		#bg1, #bg2, #bg3{width:100%; height:7000px; position: absolute;
+  top: 0px;
+  left: 0px;}
+		#bg1{background:url('bg1.png');}
+		#bg2{background:url('bg2.png');}
+		#bg3{background:url('bg3.png');}
+		#rotateDiv{
+			    width: 50%;
+  background: bisque;
+  border-radius: 10px;
+  height: 200px;
+  margin: 0px auto;
+  font-size: 40px;
+  line-height: 200px;
+  text-align: center;
+  z-index: 5;
+  position: fixed;
+  left: 25%;
+		}
+		#inZoomDiv{
+			  position: fixed;
+  width: 50%;
+  left: 25%;
+  top: 166px;
+  text-align: center;
+  font-size: 20px;
+		}
+	#endDiv{
+		  height: 350px;
+  width: 50%;
+  border: 10px solid blue;
+  border-radius: 15px;
+  background: white;
+  text-align: center;
+  line-height: 350px;
+  position: absolute;
+  bottom: 150px;
+  left: 25%;
+  z-index: 999;
+	}
+	#leftTextDiv{width:50%; height:50px; position:fixed; top:350px; left:9999%; font-size:20px; text-align:center; 
+	font-size:45px;
+	}
+	#bottomTextDiv{width:50%; height:50px; position:fixed; bottom:-150px; left:25%; font-size:20px; text-align:center; font-size:45px; }
+	</style>
+</head>
+<body>
+	<div id="bg1"><div id="endDiv">The END</div>
+	
+		<div id="leftTextDiv">Left text animation</div>
+		<div id="bottomTextDiv">Bottom text animation</div>
+	</div>
+	<div id="bg2"></div>
+	<div id="bg3"></div>
+	<div id="wrap">
+		<div id="rotateDiv">scroll</div>
+		<div id="inZoomDiv">Zoom Text</div>
+		
+	</div>
+	
+	<div id="progress"></div>
+	<script>
+		var lastScrollTop = 0;
+		//colors
+		var colors = [ "yellow", "red", "blue",  "orange","green" ]; 
+		//Progress bar
+		var proBar=$('#progress');
+		//bg divs
+		var bg1=$('#bg1'); var bg2=$('#bg2'); var bg3=$('#bg3');
+		//rotateDiv
+		var rotateDiv=$('#rotateDiv');
+		//inZoomDiv
+		var inZoomDiv=$('#inZoomDiv');
+		//endDiv		
+		var endDiv=$('#endDiv');
+		//leftTextDiv
+		var leftTextDiv=$('#leftTextDiv');
+		//bottomTextDiv
+		var bottomTextDiv=$('#bottomTextDiv');
+		
+		$(inZoomDiv).css({ 'transform': 'rotate(360deg)'});
+		$(inZoomDiv).css({ 'transform': 'scale(0)'});
+		
+		$(window).scroll(function (event) {
+			var st = $(this).scrollTop();
+			if (st > lastScrollTop) {
+				moveUp();
+			} else {
+				moveDown();
+			}
+			lastScrollTop = st;
+		});
+		
+		function moveDown(){
+			//progress bar
+			animateProBar(1);
+			//bgDivs
+			animateBG(1);
+			//
+			
+		}
+		
+		function moveUp(){
+			//progress bar
+			animateProBar(0);
+			//bg Divs animation
+			animateBG(0);
+		}
+		
+		//progress bar function
+		var c=0;
+		var rotateDivVal=0;
+		var rotateDivTransp=1;
+		var inZoomDivRotateVal=0;
+		var inZoomDivScaleVal=0;
+		function animateProBar(up_down){			
+			var wintop = $(window).scrollTop(), docheight = $(document).height(), winheight = $(window).height();
+			var wrapWidth=(wintop/(docheight-winheight))*100;
+			$(proBar).width(""+wrapWidth+"%");
+			
+			
+			if(wrapWidth>60){
+				$(bg1).css('background-color','#AD310B');
+				$(bg1).css('background-image','none');
+				$(bg2).css('background-image','none');
+				$(bg3).css('background-image','none');
+				$(bg1).css({  'transition': 'background-color 1000ms linea'});
+			}else {		
+				$(bg1).css('background-image','url(bg1.png)');
+				$(bg2).css('background-image','url(bg2.png)');
+				$(bg3).css('background-image','url(bg3.png)');
+				$(bg1).css('background-color','#ffffff');
+				//$(bg1).css({ 'transition': 'background-color 1000ms linea'});
+			}
+			if(wrapWidth>40 && wrapWidth<55){
+				$(leftTextDiv).css( 'transition', '.3s');
+				$(leftTextDiv).css( 'left', '25%');				
+			}
+			else{
+				$(leftTextDiv).css( 'transition', '.3s');
+				$(leftTextDiv).css( 'left', '999%');
+			}
+			if(wrapWidth>56 && wrapWidth<80){
+				$(bottomTextDiv).css( 'transition', '.3s');
+				$(bottomTextDiv).css( 'bottom', '250px');				
+			}
+			else{
+				$(bottomTextDiv).css( 'transition', '.3s');
+				$(bottomTextDiv).css( 'bottom', '-150px');
+			}
+			
+			
+			if(up_down==1 && rotateDivVal>0){				
+				rotateDivVal=rotateDivVal-15;
+				rotateDivTransp=rotateDivTransp+.15;
+			}else{	
+				rotateDivVal=rotateDivVal+15;
+				rotateDivTransp=rotateDivTransp-.15;							
+			}
+			if(wrapWidth>40){$(inZoomDiv).css('display','none');}else{$(inZoomDiv).css('display','block');}
+			if(rotateDivVal<=360){
+				$(rotateDiv).css({ 'transform': 'rotate(-'+rotateDivVal+'deg)'}); 
+				$(rotateDiv).css('transform-origin','0 0'); 
+				$(rotateDiv).css('opacity', rotateDivTransp); 
+				$(rotateDiv).css('top', '-'+rotateDivVal); 
+			}
+			if(wrapWidth>10 && wrapWidth<40){
+				inZoomDivRotateVal=inZoomDivRotateVal+6;
+				inZoomDivScaleVal=wrapWidth/15;
+				$(inZoomDiv).css({ 'transform': 'rotate(-'+inZoomDivRotateVal+'deg) scale('+inZoomDivScaleVal+')'});
+				//$(inZoomDiv).css({ 'transform': 'scale('+inZoomDivScaleVal+')'});
+				
+				//$(inZoomDiv).css('transform-origin','0 0'); 
+				//$(inZoomDiv).css('opacity', rotateDivTransp);
+			}
+			
+			
+				
+			if(wrapWidth>c*20){
+				$(proBar).css('backgroundColor', colors[c]);
+				c++;
+			}else{
+				$(proBar).css('backgroundColor', colors[c]);
+				c--;
+			}	
+			
+			
+				
+		}
+		
+		
+		//bg divs animation
+		var bgw1=0, bgw2=0, bgw3=0;
+		function animateBG(up_down){
+			var wintop = $(window).scrollTop(), docheight = $(document).height(), winheight = $(window).height();
+			var wrapWidth=(wintop/(docheight-winheight))*100;			
+			if(up_down==1){
+				bgw1=bgw1+25; bgw2=bgw2+15; bgw3=bgw3+2;
+			}else{
+				//bgw1=wrapWidth-700; bgw2=wrapWidth-300; bgw3=wrapWidth-1050;
+				bgw1=bgw1-25; bgw2=bgw2-15; bgw3=bgw3-2;
+			}			
+			$(bg1).css('background-position',"0 "+bgw1+"px");
+			$(bg2).css('background-position',"0 "+bgw2+"px");			
+			$(bg3).css('background-position',"0 "+bgw3+"px");
+		}
+	</script>
+</body>
+</html>
